@@ -1,0 +1,6 @@
+{
+  "name": "StudyPulse - AI Study Planner & Learning Coach",
+  "description": "A modern AI-powered study planner and personal learning coach with personalized schedules, assignment and exam tracking, smart study plans, focus timer, analytics, quizzes, and intelligent topic coaching.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
