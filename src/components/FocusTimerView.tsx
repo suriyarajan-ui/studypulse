@@ -88,7 +88,7 @@ export const FocusTimerView: React.FC = () => {
       </div>
 
       {/* Main Focus Console */}
-      <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-10 flex flex-col items-center justify-center space-y-8 relative overflow-hidden">
+      <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-4 sm:p-10 flex flex-col items-center justify-center space-y-6 sm:space-y-8 relative overflow-hidden">
         {/* Subtle theme background aura */}
         <div
           className="absolute -top-32 -left-32 w-72 h-72 rounded-full blur-3xl opacity-20 pointer-events-none transition-all duration-700"
@@ -96,10 +96,10 @@ export const FocusTimerView: React.FC = () => {
         />
 
         {/* Mode Selectors */}
-        <div className="flex items-center gap-1.5 p-1.5 bg-slate-100 rounded-2xl border border-slate-200/80">
+        <div className="flex flex-wrap items-center justify-center gap-1 p-1 sm:p-1.5 bg-slate-100 rounded-2xl border border-slate-200/80 max-w-full">
           <button
             onClick={() => setTimerMode("pomodoro")}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all min-h-[36px] ${
               timerState.mode === "pomodoro"
                 ? "bg-white text-indigo-700 shadow-xs"
                 : "text-slate-600 hover:text-slate-900"
@@ -109,7 +109,7 @@ export const FocusTimerView: React.FC = () => {
           </button>
           <button
             onClick={() => setTimerMode("short_break")}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all min-h-[36px] ${
               timerState.mode === "short_break"
                 ? "bg-white text-emerald-700 shadow-xs"
                 : "text-slate-600 hover:text-slate-900"
@@ -119,7 +119,7 @@ export const FocusTimerView: React.FC = () => {
           </button>
           <button
             onClick={() => setTimerMode("long_break")}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all min-h-[36px] ${
               timerState.mode === "long_break"
                 ? "bg-white text-sky-700 shadow-xs"
                 : "text-slate-600 hover:text-slate-900"
@@ -130,7 +130,7 @@ export const FocusTimerView: React.FC = () => {
         </div>
 
         {/* Big Circular Dial Display */}
-        <div className="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center">
+        <div className="relative w-56 h-56 sm:w-72 sm:h-72 flex items-center justify-center">
           {/* SVG Progress Ring */}
           <svg className="w-full h-full -rotate-90" viewBox="0 0 240 240">
             <circle
@@ -160,7 +160,7 @@ export const FocusTimerView: React.FC = () => {
 
           {/* Center Content */}
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <span className="font-heading font-extrabold text-5xl sm:text-6xl text-slate-900 font-mono tracking-tight">
+            <span className="font-heading font-extrabold text-4xl sm:text-6xl text-slate-900 font-mono tracking-tight">
               {formatTime(timerState.timeLeftSeconds)}
             </span>
             <div className="flex items-center gap-1.5 mt-2">
@@ -184,7 +184,7 @@ export const FocusTimerView: React.FC = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => resetTimer()}
-            className="p-3.5 rounded-2xl border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all"
+            className="p-3.5 rounded-2xl border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
             title="Reset timer"
           >
             <RotateCcw className="w-5 h-5" />
@@ -193,7 +193,7 @@ export const FocusTimerView: React.FC = () => {
           <button
             id="timer-play-pause-btn"
             onClick={timerState.isRunning ? pauseTimer : startTimer}
-            className={`px-8 py-4 rounded-2xl text-white font-bold text-base shadow-lg transition-all flex items-center gap-3 ${
+            className={`px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl text-white font-bold text-sm sm:text-base shadow-lg transition-all flex items-center gap-3 min-h-[44px] ${
               timerState.isRunning
                 ? "bg-slate-900 hover:bg-slate-800 shadow-slate-900/20"
                 : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-600/30 scale-105"

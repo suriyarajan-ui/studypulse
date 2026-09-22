@@ -20,6 +20,7 @@ import {
   NewGoalModal,
   NewNoteModal,
 } from "./components/Modals";
+import { OfflineIndicator } from "./components/OfflineIndicator";
 
 const AppContent: React.FC = () => {
   const { activeTab, setActiveTab } = useStudy();
@@ -51,7 +52,7 @@ const AppContent: React.FC = () => {
         />
 
         {/* Dynamic Viewport */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-h-[calc(100vh-61px)]">
+        <main className="flex-1 p-3 sm:p-6 lg:p-8 overflow-y-auto min-h-0 lg:max-h-[calc(100vh-61px)]">
           {activeTab === "dashboard" && (
             <DashboardView
               onOpenNewTask={() => setIsTaskModalOpen(true)}
@@ -148,6 +149,9 @@ const AppContent: React.FC = () => {
         isOpen={isNoteModalOpen}
         onClose={() => setIsNoteModalOpen(false)}
       />
+
+      {/* PWA Offline Connectivity Banner */}
+      <OfflineIndicator />
     </div>
   );
 };

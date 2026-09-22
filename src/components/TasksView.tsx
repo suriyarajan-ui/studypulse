@@ -108,9 +108,9 @@ export const TasksView: React.FC<{
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12 animate-in fade-in duration-200">
       {/* Header and Action Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="font-heading text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
             Tasks, Assignments & Homework
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -118,14 +118,14 @@ export const TasksView: React.FC<{
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
           <button
             id="ai-auto-prioritize-btn"
             onClick={handleAIPrioritize}
             disabled={isPrioritizing}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700 text-xs font-semibold transition-colors disabled:opacity-50 min-h-[40px]"
           >
-            <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+            <Sparkles className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
             <span>{isPrioritizing ? "Analyzing Workload..." : "AI Auto-Prioritize"}</span>
           </button>
 
@@ -133,18 +133,18 @@ export const TasksView: React.FC<{
             <button
               id="add-task-btn"
               onClick={onOpenNewTask}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition-all"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs font-semibold shadow-sm transition-all min-h-[40px]"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 shrink-0" />
               <span>Add Study Task</span>
             </button>
           ) : (
             <button
               id="add-assignment-btn"
               onClick={onOpenNewAssignment}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition-all"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs font-semibold shadow-sm transition-all min-h-[40px]"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 shrink-0" />
               <span>Add Assignment</span>
             </button>
           )}
@@ -177,7 +177,7 @@ export const TasksView: React.FC<{
           </div>
           <button
             onClick={() => setPriorityAnalysis(null)}
-            className="text-slate-400 hover:text-slate-600 text-xs"
+            className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg text-xs"
           >
             ✕
           </button>
@@ -185,11 +185,11 @@ export const TasksView: React.FC<{
       )}
 
       {/* View Switcher: Study Tasks vs Major Assignments */}
-      <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+        <div className="flex items-center gap-2 overflow-x-auto touch-pan-x pb-0.5 scrollbar-none">
           <button
             onClick={() => setViewMode("tasks")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all shrink-0 min-h-[38px] ${
               viewMode === "tasks"
                 ? "bg-slate-900 text-white shadow-xs"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -199,7 +199,7 @@ export const TasksView: React.FC<{
           </button>
           <button
             onClick={() => setViewMode("assignments")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all shrink-0 min-h-[38px] ${
               viewMode === "assignments"
                 ? "bg-slate-900 text-white shadow-xs"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -210,12 +210,12 @@ export const TasksView: React.FC<{
         </div>
 
         {/* Filter controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {/* Subject selector */}
           <select
             value={selectedSubject}
             onChange={(e) => setSelectedSubject(e.target.value)}
-            className="text-xs bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 outline-none focus:border-indigo-500"
+            className="text-xs bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-slate-700 outline-none focus:border-indigo-500 min-h-[38px]"
           >
             <option value="all">All Subjects</option>
             {subjects.map((s) => (
@@ -229,7 +229,7 @@ export const TasksView: React.FC<{
             <select
               value={selectedPriority}
               onChange={(e) => setSelectedPriority(e.target.value)}
-              className="text-xs bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 outline-none focus:border-indigo-500"
+              className="text-xs bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-slate-700 outline-none focus:border-indigo-500 min-h-[38px]"
             >
               <option value="all">All Priorities</option>
               <option value="urgent">Urgent</option>
@@ -244,12 +244,12 @@ export const TasksView: React.FC<{
       {viewMode === "tasks" ? (
         <div className="space-y-4">
           {/* Status Sub-tabs */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 overflow-x-auto touch-pan-x pb-1 scrollbar-none">
             {(["all", "todo", "in_progress", "completed"] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveStatusTab(tab)}
-                className={`px-3 py-1 rounded-full text-xs font-semibold capitalize transition-all ${
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold capitalize transition-all shrink-0 min-h-[32px] ${
                   activeStatusTab === tab
                     ? "bg-indigo-50 text-indigo-700 border border-indigo-200"
                     : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"

@@ -59,9 +59,9 @@ export const NotesView: React.FC<{
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12 animate-in fade-in duration-200">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="font-heading text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
             Notes & Learning Resources
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -72,9 +72,9 @@ export const NotesView: React.FC<{
         <button
           id="add-note-btn"
           onClick={onOpenNewNote}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition-all"
+          className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs font-semibold shadow-sm transition-all min-h-[40px] shrink-0"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 shrink-0" />
           <span>New Note</span>
         </button>
       </div>
@@ -87,7 +87,7 @@ export const NotesView: React.FC<{
             <select
               value={selectedSubject}
               onChange={(e) => setSelectedSubject(e.target.value)}
-              className="w-full text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-700 outline-none focus:border-indigo-500"
+              className="w-full text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-700 outline-none focus:border-indigo-500 min-h-[38px]"
             >
               <option value="all">All Subjects</option>
               {subjects.map((s) => (
@@ -126,7 +126,7 @@ export const NotesView: React.FC<{
                         deleteNote(note.id);
                         if (activeNote?.id === note.id) setActiveNote(null);
                       }}
-                      className="text-slate-300 hover:text-rose-600 p-0.5"
+                      className="text-slate-300 hover:text-rose-600 p-1 min-h-[28px] min-w-[28px] flex items-center justify-center rounded-md"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -161,13 +161,13 @@ export const NotesView: React.FC<{
         {/* Right Column (2 Cols): Active Note Content & AI Tools */}
         <div className="lg:col-span-2 space-y-4">
           {activeNote ? (
-            <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-4">
+            <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-xs space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
                 <div>
                   <span className="text-[10px] font-semibold text-indigo-600 uppercase tracking-wider">
                     {subjects.find((s) => s.id === activeNote.subjectId)?.name}
                   </span>
-                  <h2 className="font-heading font-bold text-xl text-slate-900 mt-0.5">
+                  <h2 className="font-heading font-bold text-lg sm:text-xl text-slate-900 mt-0.5">
                     {activeNote.title}
                   </h2>
                 </div>
@@ -175,7 +175,7 @@ export const NotesView: React.FC<{
                 <button
                   onClick={handleAISummarizeNote}
                   disabled={isSummarizing}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold transition-colors disabled:opacity-50 shrink-0"
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700 text-xs font-semibold transition-colors disabled:opacity-50 shrink-0 min-h-[38px]"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
                   <span>{isSummarizing ? "Synthesizing..." : "AI Exam Cheatsheet"}</span>

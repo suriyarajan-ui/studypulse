@@ -29,9 +29,9 @@ export const ExamsView: React.FC<{
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12 animate-in fade-in duration-200">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="font-heading text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
             Exams, Midterms & Final Deadlines
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -42,15 +42,15 @@ export const ExamsView: React.FC<{
         <button
           id="add-exam-btn"
           onClick={onOpenNewExam}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition-all"
+          className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs font-semibold shadow-sm transition-all min-h-[40px] shrink-0"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 shrink-0" />
           <span>Add New Exam</span>
         </button>
       </div>
 
       {/* Exams Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {exams.map((exam) => {
           const subject = subjects.find((s) => s.id === exam.subjectId);
           const daysLeft = Math.ceil(
@@ -62,13 +62,13 @@ export const ExamsView: React.FC<{
           return (
             <div
               key={exam.id}
-              className="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md transition-all p-5 flex flex-col justify-between space-y-5"
+              className="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md transition-all p-4 sm:p-5 flex flex-col justify-between space-y-4 sm:space-y-5"
             >
               <div className="space-y-4">
                 {/* Header Row */}
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       {subject && (
                         <span
                           className="font-mono text-xs font-bold px-2 py-0.5 rounded"
@@ -85,12 +85,12 @@ export const ExamsView: React.FC<{
                       </span>
                     </div>
 
-                    <h3 className="font-heading font-bold text-lg text-slate-900 mt-1.5">
+                    <h3 className="font-heading font-bold text-base sm:text-lg text-slate-900 mt-1.5">
                       {exam.title}
                     </h3>
                   </div>
 
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 shrink-0">
                     <span
                       className={`text-xs font-mono font-bold px-2.5 py-1 rounded-full ${
                         isUrgent
@@ -98,7 +98,7 @@ export const ExamsView: React.FC<{
                           : "bg-amber-100 text-amber-800"
                       }`}
                     >
-                      {daysLeft <= 0 ? "Today!" : `${daysLeft} days left`}
+                      {daysLeft <= 0 ? "Today!" : `${daysLeft}d left`}
                     </span>
                     <button
                       onClick={() => {
@@ -107,6 +107,7 @@ export const ExamsView: React.FC<{
                         }
                       }}
                       className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50"
+                      title="Delete Exam"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -114,7 +115,7 @@ export const ExamsView: React.FC<{
                 </div>
 
                 {/* Exam Details Bar */}
-                <div className="grid grid-cols-3 gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-xs text-slate-600">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-xs text-slate-600">
                   <div className="flex items-center gap-1.5 truncate">
                     <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                     <span>{exam.date}</span>

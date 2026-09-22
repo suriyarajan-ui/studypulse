@@ -32,6 +32,26 @@ app.post("/api/db/seed", async (req, res) => {
   }
 });
 
+app.post("/api/db/migrate", async (req, res) => {
+  try {
+    const result = await dbService.migrateDataToSupabase();
+    res.json(result);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/api/db/schema-sql", async (req, res) => {
+  try {
+    const fs = await import("fs/promises");
+    const schemaPath = path.join(process.cwd(), "supabase", "schema.sql");
+    const sql = await fs.readFile(schemaPath, "utf-8");
+    res.type("text/plain").send(sql);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // SUBJECTS
 app.get("/api/subjects", async (req, res) => {
   try {
@@ -371,6 +391,45 @@ function getGeminiClient(): GoogleGenAI | null {
   });
 }
 
+/**
+ * Executes a Gemini content generation request with automatic graceful fallback
+ * across stable, low-latency models to defend against transient 503 high-demand spikes.
+ */
+export async function callGeminiGenerate(
+  ai: GoogleGenAI,
+  params: {
+    contents: any;
+    config?: any;
+    preferredModel?: string;
+  }
+) {
+  const candidateModels = [
+    params.preferredModel,
+    "gemini-3.5-flash-lite",
+    "gemini-3.1-flash-lite",
+    "gemini-flash-latest",
+    "gemini-3.6-flash",
+  ].filter((m): m is string => Boolean(m) && m !== "gemini-2.5-flash" && m !== "gemini-2.5-flash-lite");
+
+  const uniqueCandidates = Array.from(new Set(candidateModels));
+  let lastError: any = null;
+
+  for (const model of uniqueCandidates) {
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents: params.contents,
+        config: params.config,
+      });
+      return response;
+    } catch (err: any) {
+      // Step to next available resilient model
+      lastError = err;
+    }
+  }
+  throw lastError;
+}
+
 // Health check
 app.get("/api/health", (req, res) => {
   res.json({
@@ -383,8 +442,18 @@ app.get("/api/health", (req, res) => {
 // AI Learning Coach Chat
 app.post("/api/gemini/chat", async (req, res) => {
   try {
-    const { messages, studentContext } = req.body;
+    const { messages, message, history, studentContext } = req.body;
     const ai = getGeminiClient();
+
+    // Support both format: { messages } and { message, history }
+    const effectiveMessages: Array<{ role: string; content: string }> =
+      Array.isArray(messages) && messages.length > 0
+        ? messages
+        : Array.isArray(history) && history.length > 0
+        ? history
+        : message
+        ? [{ role: "user", content: String(message) }]
+        : [];
 
     const systemInstruction = `You are StudyPulse, an empathetic, highly pedagogical, and analytical personal AI Study Planner and Learning Coach.
 You have real-time access to the student's study context:
@@ -399,7 +468,7 @@ Guidelines:
 
     if (!ai) {
       // High-quality contextual simulated coach response when API key is missing
-      const lastMessage = messages[messages.length - 1]?.content || "";
+      const lastMessage = effectiveMessages[effectiveMessages.length - 1]?.content || "";
       let mockReply = "";
 
       if (lastMessage.toLowerCase().includes("recommend") || lastMessage.toLowerCase().includes("study next") || lastMessage.toLowerCase().includes("what should i study")) {
@@ -450,22 +519,34 @@ How would you like to tackle your goals today? I can:
       return res.json({ reply: mockReply });
     }
 
-    // Call Gemini 3.8 Flash
-    const formattedContents = messages.map((m: { role: string; content: string }) => ({
+    // Call Gemini with resilient multi-model fallback
+    const formattedContents = effectiveMessages.map((m: { role: string; content: string }) => ({
       role: m.role === "assistant" ? "model" : "user",
       parts: [{ text: m.content }],
     }));
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.8-flash",
-      contents: formattedContents,
-      config: {
-        systemInstruction,
-        temperature: 0.7,
-      },
-    });
+    try {
+      const response = await callGeminiGenerate(ai, {
+        preferredModel: "gemini-3.5-flash-lite",
+        contents: formattedContents,
+        config: {
+          systemInstruction,
+          temperature: 0.7,
+        },
+      });
 
-    res.json({ reply: response.text || "I am ready to help you optimize your study routine!" });
+      res.json({ reply: response.text || "I am ready to help you optimize your study routine!" });
+    } catch {
+      // Graceful fallback response so the user's chat is never interrupted
+      res.json({
+        reply: `### 📚 StudyPulse Learning Coach
+
+I'm currently reviewing your academic workload! Based on your schedule:
+- **Top Priority:** Focus on your nearest exam or high-difficulty assignments first.
+- **Recommended Strategy:** Start a 25-minute Pomodoro block on your most challenging topic while your focus is sharp.
+- **Next Step:** You can ask me to generate a personalized daily schedule or quiz you on any topic whenever you're ready!`,
+      });
+    }
   } catch (error: any) {
     console.error("Error in /api/gemini/chat:", error);
     res.status(500).json({ error: error.message || "Failed to generate coaching response" });
@@ -544,8 +625,8 @@ Generate a structured JSON schedule with time blocks, actionable learning object
       return res.json(plan);
     }
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.8-flash",
+    const response = await callGeminiGenerate(ai, {
+      preferredModel: "gemini-3.5-flash-lite",
       contents: prompt,
       config: {
         systemInstruction: "You are an expert academic scheduler. Return pure JSON adhering strictly to the schema.",
@@ -679,8 +760,8 @@ Include:
       });
     }
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.8-flash",
+    const response = await callGeminiGenerate(ai, {
+      preferredModel: "gemini-3.5-flash-lite",
       contents: prompt,
       config: {
         systemInstruction: "You are an elite academic tutor creating assessment questions for students. Return structured JSON.",
@@ -766,8 +847,8 @@ Imagine an airport security checkpoint: if you have 10 baggage scanners but only
       return res.json({ explanation });
     }
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.8-flash",
+    const response = await callGeminiGenerate(ai, {
+      preferredModel: "gemini-3.5-flash-lite",
       contents: prompt,
       config: {
         systemInstruction: "You are an award-winning university professor and peer tutor renowned for making intricate topics intuitively graspable.",
@@ -809,8 +890,8 @@ Calculate an urgency/impact score (1-100) and explain why each item is ranked wh
       });
     }
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.8-flash",
+    const response = await callGeminiGenerate(ai, {
+      preferredModel: "gemini-3.5-flash-lite",
       contents: prompt,
       config: {
         systemInstruction: "You are an executive function and productivity coach for university and high-school students. Return JSON.",
@@ -884,8 +965,8 @@ Schedule your hardest Chemistry topic during your peak morning energy window (9 
       });
     }
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.8-flash",
+    const response = await callGeminiGenerate(ai, {
+      preferredModel: "gemini-3.5-flash-lite",
       contents: prompt,
       config: {
         systemInstruction: "You are an encouraging, data-informed academic performance coach.",
@@ -897,6 +978,366 @@ Schedule your hardest Chemistry topic during your peak morning energy window (9 
   } catch (error: any) {
     console.error("Error in /api/gemini/summary:", error);
     res.status(500).json({ error: error.message || "Failed to generate learning summary" });
+  }
+});
+
+// AI Assistant for Searching Records using Natural Language
+app.post("/api/ai/search", async (req, res) => {
+  try {
+    const { query } = req.body;
+    if (!query || typeof query !== "string" || !query.trim()) {
+      return res.status(400).json({ error: "Search query is required." });
+    }
+
+    const trimmedQuery = query.trim();
+
+    // 1. Fetch current application state from dbService
+    const [subjects, tasks, exams, assignments, scheduleBlocks, notes, goals, profile] = await Promise.all([
+      dbService.getSubjects(),
+      dbService.getTasks(),
+      dbService.getExams(),
+      dbService.getAssignments(),
+      dbService.getScheduleBlocks(),
+      dbService.getNotes(),
+      dbService.getGoals(),
+      dbService.getProfile(),
+    ]);
+
+    const subjectMap = new Map(subjects.map((s) => [s.id, s]));
+
+    // Compact dataset for LLM prompt context
+    const contextData = {
+      profile: {
+        name: profile?.name,
+        targetGPA: profile?.targetGPA,
+        major: profile?.major,
+      },
+      subjects: subjects.map((s) => ({
+        id: s.id,
+        name: s.name,
+        code: s.code,
+        difficulty: s.difficulty,
+        confidenceLevel: s.confidenceLevel,
+        currentGrade: s.currentGrade,
+        targetGrade: s.targetGrade,
+        topics: s.syllabusTopics,
+      })),
+      tasks: tasks.map((t) => ({
+        id: t.id,
+        title: t.title,
+        subject: subjectMap.get(t.subjectId)?.name || t.subjectId,
+        priority: t.priority,
+        status: t.status,
+        dueDate: t.dueDate,
+        estimatedMinutes: t.estimatedMinutes,
+        notes: t.notes,
+      })),
+      exams: exams.map((e) => ({
+        id: e.id,
+        title: e.title,
+        subject: subjectMap.get(e.subjectId)?.name || e.subjectId,
+        date: e.date,
+        time: e.time,
+        weightPercentage: e.weightPercentage,
+        topicsCovered: e.topicsToCover?.map((t) => t.topic) || [],
+      })),
+      assignments: assignments.map((a) => ({
+        id: a.id,
+        title: a.title,
+        subject: subjectMap.get(a.subjectId)?.name || a.subjectId,
+        dueDate: a.dueDate,
+        status: a.status,
+        weight: a.weight,
+        description: a.description,
+      })),
+      scheduleBlocks: scheduleBlocks.map((b) => ({
+        id: b.id,
+        date: b.date,
+        startTime: b.startTime,
+        endTime: b.endTime,
+        subject: subjectMap.get(b.subjectId)?.name || b.subjectId,
+        title: b.title,
+        completed: b.completed,
+      })),
+      notes: notes.map((n) => ({
+        id: n.id,
+        title: n.title,
+        subject: subjectMap.get(n.subjectId)?.name || n.subjectId,
+        tags: n.tags,
+        contentSnippet: n.content?.slice(0, 150),
+      })),
+      goals: goals.map((g) => ({
+        id: g.id,
+        title: g.title,
+        category: g.category,
+        currentValue: g.currentValue,
+        targetValue: g.targetValue,
+        unit: g.unit,
+      })),
+    };
+
+    const ai = getGeminiClient();
+
+    // Contextual Fallback function when Gemini API is offline or key is missing
+    const runFallbackSearch = () => {
+      const q = trimmedQuery.toLowerCase();
+      const stopWords = new Set(["show", "me", "the", "for", "and", "with", "what", "are", "all", "about", "have", "from"]);
+      const tokens = q
+        .replace(/[^a-z0-9\s]/g, " ")
+        .split(/\s+/)
+        .filter((w) => w.length >= 3 && !stopWords.has(w));
+
+      const matchedEntities: any[] = [];
+
+      const hasTerm = (str?: string) => {
+        if (!str) return false;
+        const s = str.toLowerCase();
+        if (s.includes(q) || q.includes(s)) return true;
+        return tokens.some((token) => s.includes(token));
+      };
+
+      // Check tasks
+      for (const t of tasks) {
+        const subName = subjectMap.get(t.subjectId)?.name || "";
+        const isMatch =
+          hasTerm(t.title) ||
+          hasTerm(subName) ||
+          hasTerm(t.notes) ||
+          (q.includes("urgent") && (t.priority === "urgent" || t.priority === "high")) ||
+          (q.includes("pending") && t.status !== "completed") ||
+          (q.includes("todo") && t.status === "todo") ||
+          (q.includes("task") && (hasTerm(subName) || q.includes("all")));
+
+        if (isMatch) {
+          matchedEntities.push({
+            id: t.id,
+            type: "task",
+            title: t.title,
+            subtitle: `${subName} • Due ${t.dueDate} • ${t.estimatedMinutes} min`,
+            badge: `${t.priority.toUpperCase()} • ${t.status}`,
+            relevanceReason: `Matches priority/status and due date for ${subName}`,
+            targetTab: "tasks",
+          });
+        }
+      }
+
+      // Check exams
+      for (const e of exams) {
+        const subName = subjectMap.get(e.subjectId)?.name || "";
+        const isMatch =
+          hasTerm(e.title) ||
+          hasTerm(subName) ||
+          (e.topicsToCover && e.topicsToCover.some((top) => hasTerm(top.topic))) ||
+          q.includes("exam") ||
+          q.includes("test") ||
+          q.includes("midterm") ||
+          q.includes("final");
+
+        if (isMatch) {
+          matchedEntities.push({
+            id: e.id,
+            type: "exam",
+            title: e.title,
+            subtitle: `${subName} • Scheduled ${e.date} at ${e.time}`,
+            badge: `${e.weightPercentage}% of Grade`,
+            relevanceReason: `Upcoming scheduled exam in ${subName}`,
+            targetTab: "exams",
+          });
+        }
+      }
+
+      // Check assignments
+      for (const a of assignments) {
+        const subName = subjectMap.get(a.subjectId)?.name || "";
+        const isMatch =
+          hasTerm(a.title) ||
+          hasTerm(subName) ||
+          q.includes("assignment") ||
+          q.includes("homework") ||
+          q.includes("project");
+
+        if (isMatch) {
+          matchedEntities.push({
+            id: a.id,
+            type: "assignment",
+            title: a.title,
+            subtitle: `${subName} • Due ${a.dueDate} • Weight: ${a.weight}%`,
+            badge: a.status,
+            relevanceReason: `Course assignment in ${subName}`,
+            targetTab: "tasks",
+          });
+        }
+      }
+
+      // Check subjects
+      for (const s of subjects) {
+        const isMatch =
+          hasTerm(s.name) ||
+          hasTerm(s.code) ||
+          (s.syllabusTopics && s.syllabusTopics.some((top) => hasTerm(top))) ||
+          (q.includes("hard") && s.difficulty === "hard") ||
+          (q.includes("confidence") && s.confidenceLevel <= 2);
+
+        if (isMatch) {
+          matchedEntities.push({
+            id: s.id,
+            type: "subject",
+            title: s.name,
+            subtitle: `${s.code} • ${s.professor || "Faculty"} • ${s.credits} Credits`,
+            badge: `Confidence ${s.confidenceLevel}/5 • Grade ${s.currentGrade}`,
+            relevanceReason: `Subject curriculum & syllabus match`,
+            targetTab: "subjects",
+          });
+        }
+      }
+
+      // Check notes
+      for (const n of notes) {
+        const subName = subjectMap.get(n.subjectId)?.name || "";
+        const isMatch =
+          hasTerm(n.title) ||
+          hasTerm(n.content) ||
+          (n.tags && n.tags.some((tag) => hasTerm(tag))) ||
+          hasTerm(subName);
+
+        if (isMatch) {
+          matchedEntities.push({
+            id: n.id,
+            type: "note",
+            title: n.title,
+            subtitle: `${subName} • Tags: ${n.tags.join(", ")}`,
+            badge: "Study Notes",
+            relevanceReason: `Contains keywords in study notes or tags`,
+            targetTab: "notes",
+          });
+        }
+      }
+
+      // Check schedule blocks
+      for (const b of scheduleBlocks) {
+        const subName = subjectMap.get(b.subjectId)?.name || "";
+        const isMatch = hasTerm(b.title) || hasTerm(subName) || hasTerm(b.date);
+
+        if (isMatch) {
+          matchedEntities.push({
+            id: b.id,
+            type: "schedule",
+            title: `${subName}: ${b.title}`,
+            subtitle: `${b.date} ${b.startTime} - ${b.endTime}`,
+            badge: b.completed ? "Completed" : "Scheduled",
+            relevanceReason: `Scheduled calendar study block`,
+            targetTab: "schedule",
+          });
+        }
+      }
+
+      const count = matchedEntities.length;
+      const summary =
+        count > 0
+          ? `Found ${count} matching records across your study management system for "${trimmedQuery}". Review the prioritized items below.`
+          : `No direct records matched "${trimmedQuery}". Try searching for specific subject names, assignment titles, or urgency terms like "urgent tasks" or "chemistry".`;
+
+      return {
+        query: trimmedQuery,
+        summary,
+        matchedCount: count,
+        entities: matchedEntities.slice(0, 10),
+        suggestedActions: [
+          "View upcoming exams in Exams tab",
+          "Focus on highest priority tasks",
+          "Schedule a dedicated review block",
+        ],
+      };
+    };
+
+    const prompt = `User Query: "${trimmedQuery}"
+
+You are the AI Search Assistant for the StudyPulse student management system.
+Below is the student's complete, live database records across all entities:
+${JSON.stringify(contextData, null, 2)}
+
+Instructions:
+1. Interpret the user's intent. They may use natural language, fuzzy phrasing, relative urgency ("what's due soonest", "hardest test", "biology notes").
+2. Formulate a concise, insightful 1-3 sentence summary directly answering their question based on the actual data.
+3. Identify the most relevant matching records (up to 8 items). Each entity must reference a real item from the dataset.
+4. Set "targetTab" according to where the student can manage that item ("tasks", "exams", "subjects", "notes", "schedule", or "analytics").
+5. Provide 2-3 helpful, actionable next steps or suggested follow-up queries.`;
+
+    if (ai) {
+      try {
+        const response = await callGeminiGenerate(ai, {
+          preferredModel: "gemini-3.5-flash-lite",
+          contents: prompt,
+          config: {
+            systemInstruction:
+              "You are an expert academic management search engine and advisor. Return pure JSON strictly matching the schema.",
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: Type.OBJECT,
+              properties: {
+                summary: { type: Type.STRING },
+                entities: {
+                  type: Type.ARRAY,
+                  items: {
+                    type: Type.OBJECT,
+                    properties: {
+                      id: { type: Type.STRING },
+                      type: {
+                        type: Type.STRING,
+                        description: "One of: task, exam, assignment, subject, note, schedule, goal",
+                      },
+                      title: { type: Type.STRING },
+                      subtitle: { type: Type.STRING },
+                      badge: { type: Type.STRING },
+                      relevanceReason: { type: Type.STRING },
+                      targetTab: {
+                        type: Type.STRING,
+                        description: "One of: tasks, exams, subjects, notes, schedule, analytics",
+                      },
+                    },
+                    required: ["id", "type", "title", "subtitle", "relevanceReason", "targetTab"],
+                  },
+                },
+                suggestedActions: {
+                  type: Type.ARRAY,
+                  items: { type: Type.STRING },
+                },
+              },
+              required: ["summary", "entities", "suggestedActions"],
+            },
+          },
+        });
+
+        let rawText = response.text || "{}";
+        rawText = rawText.trim();
+        if (rawText.startsWith("```json")) {
+          rawText = rawText.replace(/^```json\s*/, "").replace(/\s*```$/, "");
+        } else if (rawText.startsWith("```")) {
+          rawText = rawText.replace(/^```\s*/, "").replace(/\s*```$/, "");
+        }
+
+        const parsed = JSON.parse(rawText);
+        return res.json({
+          query: trimmedQuery,
+          summary: parsed.summary || `Found matching items for "${trimmedQuery}".`,
+          matchedCount: parsed.entities?.length || 0,
+          entities: parsed.entities || [],
+          suggestedActions: parsed.suggestedActions || [],
+        });
+      } catch (genAiError: any) {
+        console.warn(
+          "[AISearch] Gemini call unavailable or encountered error, running local fallback search:",
+          genAiError.message
+        );
+      }
+    }
+
+    // Always fallback safely to comprehensive keyword/entity search
+    const fallbackResult = runFallbackSearch();
+    return res.json(fallbackResult);
+  } catch (error: any) {
+    console.error("Critical error in /api/ai/search:", error);
+    res.status(500).json({ error: error.message || "Failed to execute AI search." });
   }
 });
 

@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Zap,
 } from "lucide-react";
+import { PWAInstallButton } from "./PWAInstallButton";
 
 export const DashboardView: React.FC<{
   onOpenNewTask: () => void;
@@ -61,39 +62,39 @@ export const DashboardView: React.FC<{
   const recentSessions = sessions.slice(0, 4);
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12 animate-in fade-in duration-200">
+    <div className="space-y-4 sm:space-y-6 max-w-7xl mx-auto pb-12 animate-in fade-in duration-200">
       {/* Personalized Welcome Banner with AI Recommendation */}
-      <div className="p-6 bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 rounded-2xl text-white shadow-xl relative overflow-hidden">
+      <div className="p-4 sm:p-6 bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 rounded-2xl text-white shadow-xl relative overflow-hidden">
         {/* Subtle decorative glow */}
         <div className="absolute -top-24 -right-24 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-sky-500/15 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 flex items-center gap-1.5">
-                <Sparkles className="w-3 h-3 text-indigo-300" />
+                <Sparkles className="w-3 h-3 text-indigo-300 shrink-0" />
                 Personalized Learning Coach Active
               </span>
               <span className="text-xs text-indigo-200/80">
                 {profile.institution}
               </span>
             </div>
-            <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-white">
+            <h1 className="font-heading text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-white">
               Ready to excel today, {profile.name}?
             </h1>
-            <p className="text-sm text-indigo-100/90 leading-relaxed">
+            <p className="text-xs sm:text-sm text-indigo-100/90 leading-relaxed">
               You have <span className="font-semibold text-white">{upcomingExams.length} exams</span> on the horizon and <span className="font-semibold text-white">{urgentTasks.length} high-priority tasks</span>. Your current recommendation: tackle Organic Chemistry reaction mechanisms before noon.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full md:w-auto shrink-0">
             <button
               id="dash-what-to-study-btn"
               onClick={() => setActiveTab("ai-coach")}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-indigo-900 hover:bg-indigo-50 text-xs font-semibold shadow-md hover:shadow-lg transition-all"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white text-indigo-900 hover:bg-indigo-50 active:bg-indigo-100 text-xs font-semibold shadow-md hover:shadow-lg transition-all min-h-[40px]"
             >
-              <Sparkles className="w-4 h-4 text-indigo-600" />
+              <Sparkles className="w-4 h-4 text-indigo-600 shrink-0" />
               <span>What Should I Study Next?</span>
             </button>
 
@@ -103,17 +104,20 @@ export const DashboardView: React.FC<{
                 setActiveTab("timer");
                 startTimer();
               }}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600/60 hover:bg-indigo-600 text-white border border-indigo-400/40 text-xs font-semibold transition-all"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600/60 hover:bg-indigo-600 active:bg-indigo-700 text-white border border-indigo-400/40 text-xs font-semibold transition-all min-h-[40px]"
             >
-              <Play className="w-3.5 h-3.5 fill-white" />
+              <Play className="w-3.5 h-3.5 fill-white shrink-0" />
               <span>Launch Focus Session</span>
             </button>
           </div>
         </div>
       </div>
 
+      {/* PWA Install Banner if app is not yet installed */}
+      <PWAInstallButton variant="banner" />
+
       {/* Metric Cards Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Weekly Study Hours */}
         <div className="p-4 bg-white rounded-xl border border-slate-200/80 shadow-xs space-y-2">
           <div className="flex items-center justify-between text-slate-500 text-xs">

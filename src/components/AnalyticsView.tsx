@@ -91,9 +91,9 @@ export const AnalyticsView: React.FC<{
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12 animate-in fade-in duration-200">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="font-heading text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
             Progress Analytics & Productivity
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -105,16 +105,16 @@ export const AnalyticsView: React.FC<{
           id="generate-ai-progress-summary-btn"
           onClick={handleGenerateSummary}
           disabled={isGeneratingSummary}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition-all disabled:opacity-50"
+          className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs font-semibold shadow-sm transition-all disabled:opacity-50 min-h-[40px] shrink-0"
         >
-          <Sparkles className="w-3.5 h-3.5 text-indigo-200" />
+          <Sparkles className="w-3.5 h-3.5 text-indigo-200 shrink-0" />
           <span>{isGeneratingSummary ? "Generating Review..." : "AI Weekly Momentum Review"}</span>
         </button>
       </div>
 
       {/* AI Performance Review Output */}
       {aiSummary && (
-        <div className="p-6 rounded-2xl bg-gradient-to-br from-indigo-900 to-slate-900 text-white shadow-lg space-y-4 animate-in fade-in duration-200">
+        <div className="p-4 sm:p-6 rounded-2xl bg-gradient-to-br from-indigo-900 to-slate-900 text-white shadow-lg space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-indigo-300" />
@@ -124,7 +124,7 @@ export const AnalyticsView: React.FC<{
             </div>
             <button
               onClick={() => setAiSummary(null)}
-              className="text-xs text-indigo-300 hover:text-white"
+              className="text-xs text-indigo-300 hover:text-white p-1"
             >
               ✕ Close
             </button>
@@ -137,7 +137,7 @@ export const AnalyticsView: React.FC<{
       )}
 
       {/* Top Metrics Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="p-4 bg-white rounded-xl border border-slate-200/80 shadow-xs space-y-2">
           <div className="flex items-center justify-between text-xs text-slate-500">
             <span>Weekly Study Hours</span>
@@ -201,9 +201,9 @@ export const AnalyticsView: React.FC<{
       </div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Daily Study Distribution Bar Chart */}
-        <div className="p-6 bg-white rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
+        <div className="p-4 sm:p-6 bg-white rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-slate-100">
             <div>
               <h3 className="font-heading font-bold text-sm text-slate-900">
@@ -242,7 +242,7 @@ export const AnalyticsView: React.FC<{
         </div>
 
         {/* Subject-Wise Time Allocation */}
-        <div className="p-6 bg-white rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
+        <div className="p-4 sm:p-6 bg-white rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-slate-100">
             <div>
               <h3 className="font-heading font-bold text-sm text-slate-900">

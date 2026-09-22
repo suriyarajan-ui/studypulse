@@ -114,9 +114,9 @@ export const ScheduleView: React.FC<{
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12 animate-in fade-in duration-200">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="font-heading text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
             Study Schedule & Timetable
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -124,23 +124,23 @@ export const ScheduleView: React.FC<{
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
           <button
             id="generate-ai-plan-btn"
             onClick={() => handleGenerateAIPlan("daily")}
             disabled={isGeneratingPlan}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700 text-xs font-semibold transition-colors disabled:opacity-50 min-h-[40px]"
           >
-            <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+            <Sparkles className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
             <span>{isGeneratingPlan ? "Synthesizing AI Plan..." : "AI Generate Schedule"}</span>
           </button>
 
           <button
             id="add-schedule-block-btn"
             onClick={onOpenNewBlock}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition-all"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs font-semibold shadow-sm transition-all min-h-[40px]"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 shrink-0" />
             <span>Add Study Block</span>
           </button>
         </div>
@@ -239,7 +239,7 @@ export const ScheduleView: React.FC<{
       )}
 
       {/* Days Strip Navigator */}
-      <div className="flex items-center justify-between bg-white rounded-2xl border border-slate-200/80 p-2 overflow-x-auto gap-2">
+      <div className="flex items-center justify-between bg-white rounded-2xl border border-slate-200/80 p-2 overflow-x-auto touch-pan-x scrollbar-none gap-2">
         {daysOfWeek.map((offset) => {
           const d = new Date();
           d.setDate(d.getDate() + offset);
@@ -250,7 +250,7 @@ export const ScheduleView: React.FC<{
             <button
               key={offset}
               onClick={() => setSelectedDayOffset(offset)}
-              className={`flex-1 min-w-[90px] py-2.5 px-3 rounded-xl text-center transition-all flex flex-col items-center gap-1 ${
+              className={`flex-1 min-w-[80px] sm:min-w-[90px] py-2.5 px-2.5 sm:px-3 rounded-xl text-center transition-all flex flex-col items-center gap-1 shrink-0 ${
                 isSelected
                   ? "bg-indigo-600 text-white shadow-sm font-semibold"
                   : "hover:bg-slate-100 text-slate-600"
@@ -277,7 +277,7 @@ export const ScheduleView: React.FC<{
       </div>
 
       {/* Timetable Blocks for Selected Day */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-xs space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-indigo-600" />

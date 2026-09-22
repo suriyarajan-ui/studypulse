@@ -156,3 +156,23 @@ export interface StudentProfile {
   longestStreak: number;
   lastStudyDate: string;
 }
+
+export type EntityType = "task" | "exam" | "assignment" | "subject" | "note" | "schedule" | "goal";
+
+export interface AISearchMatch {
+  id: string;
+  type: EntityType;
+  title: string;
+  subtitle: string;
+  badge?: string;
+  relevanceReason: string;
+  targetTab: "tasks" | "exams" | "subjects" | "notes" | "schedule" | "analytics";
+}
+
+export interface AISearchResponse {
+  query: string;
+  summary: string;
+  matchedCount: number;
+  entities: AISearchMatch[];
+  suggestedActions: string[];
+}

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="50%" stop-color="#4338ca" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="capGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#e0e7ff" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#1e1b4b" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Background rounded rectangle -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+
+  <!-- Inner ambient glow circle -->
+  <circle cx="256" cy="240" r="180" fill="#ffffff" fill-opacity="0.06" />
+
+  <!-- Graduation Cap Icon & Pulse element -->
+  <g filter="url(#shadow)" transform="translate(0, 0)">
+    <!-- Mortarboard Top Rhombus -->
+    <path d="M 256 128 L 416 198 L 256 268 L 96 198 Z" fill="url(#capGrad)" />
+
+    <!-- Cap Skullcap Underneath -->
+    <path d="M 160 232 L 160 300 C 160 350, 352 350, 352 300 L 352 232 Z" fill="#c7d2fe" />
+
+    <!-- Tassel String and Pendant -->
+    <path d="M 256 198 L 388 240 L 388 320" fill="none" stroke="url(#goldGrad)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="388" cy="336" r="14" fill="url(#goldGrad)" />
+  </g>
+
+  <!-- Sparkle Accent Stars -->
+  <g fill="#fbbf24">
+    <!-- Star 1 Top Right -->
+    <path d="M 390 110 Q 400 125 415 125 Q 400 125 390 140 Q 380 125 365 125 Q 380 125 390 110 Z" />
+    <!-- Star 2 Bottom Left -->
+    <path d="M 120 340 Q 128 352 140 352 Q 128 352 120 364 Q 112 352 100 352 Q 112 352 120 340 Z" />
+  </g>
+
+  <!-- Pulse / Wave bar at bottom representing study flow -->
+  <g stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" fill="none">
+    <path d="M 140 408 L 195 408 L 225 372 L 256 438 L 287 388 L 317 408 L 372 408" />
+  </g>
+</svg>

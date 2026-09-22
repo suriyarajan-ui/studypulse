@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGradMask" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="50%" stop-color="#4338ca" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="capGradMask" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#e0e7ff" />
+    </linearGradient>
+    <linearGradient id="goldGradMask" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <filter id="shadowMask" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#1e1b4b" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Full-bleed background for maskable safe-zone compliance (no outer border radius) -->
+  <rect width="512" height="512" fill="url(#bgGradMask)" />
+
+  <!-- Safe zone inner content scaled to ~78% so Android circular/squircle crops don't cut anything -->
+  <g transform="translate(56, 56) scale(0.78)">
+    <!-- Ambient circle -->
+    <circle cx="256" cy="240" r="180" fill="#ffffff" fill-opacity="0.08" />
+
+    <!-- Graduation Cap Icon -->
+    <g filter="url(#shadowMask)">
+      <path d="M 256 128 L 416 198 L 256 268 L 96 198 Z" fill="url(#capGradMask)" />
+      <path d="M 160 232 L 160 300 C 160 350, 352 350, 352 300 L 352 232 Z" fill="#c7d2fe" />
+      <path d="M 256 198 L 388 240 L 388 320" fill="none" stroke="url(#goldGradMask)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+      <circle cx="388" cy="336" r="14" fill="url(#goldGradMask)" />
+    </g>
+
+    <!-- Sparkles -->
+    <g fill="#fbbf24">
+      <path d="M 390 110 Q 400 125 415 125 Q 400 125 390 140 Q 380 125 365 125 Q 380 125 390 110 Z" />
+      <path d="M 120 340 Q 128 352 140 352 Q 128 352 120 364 Q 112 352 100 352 Q 112 352 120 340 Z" />
+    </g>
+
+    <!-- Pulse Flow -->
+    <g stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" fill="none">
+      <path d="M 140 408 L 195 408 L 225 372 L 256 438 L 287 388 L 317 408 L 372 408" />
+    </g>
+  </g>
+</svg>

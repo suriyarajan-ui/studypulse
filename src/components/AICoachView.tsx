@@ -209,13 +209,13 @@ export const AICoachView: React.FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12 animate-in fade-in duration-200">
       {/* View Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
           <div className="flex items-center gap-2">
             <span className="p-1.5 rounded-lg bg-indigo-600 text-white shadow-xs">
               <Sparkles className="w-4 h-4" />
             </span>
-            <h1 className="font-heading text-2xl font-bold text-slate-900 tracking-tight">
+            <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
               AI Learning Coach & Quiz Hub
             </h1>
           </div>
@@ -225,11 +225,11 @@ export const AICoachView: React.FC = () => {
         </div>
 
         {/* Feature Mode Switcher */}
-        <div className="flex items-center p-1 bg-slate-100 rounded-xl border border-slate-200">
+        <div className="flex items-center p-1 bg-slate-100 rounded-xl border border-slate-200 overflow-x-auto touch-pan-x scrollbar-none max-w-full">
           <button
             id="tab-coach-chat"
             onClick={() => setActiveTab("chat")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all shrink-0 min-h-[38px] ${
               activeTab === "chat"
                 ? "bg-white text-indigo-700 shadow-xs"
                 : "text-slate-600 hover:text-slate-900"
@@ -241,7 +241,7 @@ export const AICoachView: React.FC = () => {
           <button
             id="tab-quiz-hub"
             onClick={() => setActiveTab("quiz")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all shrink-0 min-h-[38px] ${
               activeTab === "quiz"
                 ? "bg-white text-indigo-700 shadow-xs"
                 : "text-slate-600 hover:text-slate-900"
@@ -253,7 +253,7 @@ export const AICoachView: React.FC = () => {
           <button
             id="tab-concept-explainer"
             onClick={() => setActiveTab("explain")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all shrink-0 min-h-[38px] ${
               activeTab === "explain"
                 ? "bg-white text-indigo-700 shadow-xs"
                 : "text-slate-600 hover:text-slate-900"
@@ -267,16 +267,16 @@ export const AICoachView: React.FC = () => {
 
       {/* Mode 1: Interactive Chatbot */}
       {activeTab === "chat" && (
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm flex flex-col h-[650px] overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm flex flex-col h-[520px] sm:h-[650px] overflow-hidden">
           {/* Coach Status Bar */}
-          <div className="p-3.5 bg-slate-50 border-b border-slate-200/80 flex items-center justify-between text-xs">
+          <div className="p-3 bg-slate-50 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-xs">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="font-semibold text-slate-700">
                 AI Coach Synced with Student Profile
               </span>
             </div>
-            <div className="flex items-center gap-3 text-slate-500">
+            <div className="flex flex-wrap items-center gap-2 text-slate-500 text-[11px] sm:text-xs">
               <span>{subjects.length} Subjects</span>
               <span>•</span>
               <span>GPA Target: {profile.targetGPA}</span>

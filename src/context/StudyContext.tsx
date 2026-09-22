@@ -70,6 +70,7 @@ interface StudyContextType {
   isDbLoading: boolean;
   refreshFromDb: () => Promise<void>;
   seedToSupabase: () => Promise<{ success: boolean; message: string }>;
+  migrateToSupabase: () => Promise<{ success: boolean; message: string; migratedCounts?: Record<string, number>; totalRecords?: number }>;
 
   // Active Timer state
   timerState: TimerState;
@@ -295,6 +296,18 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return data;
     } catch (err: any) {
       return { success: false, message: err.message || "Failed to seed to Supabase" };
+    }
+  }, [refreshFromDb]);
+
+  // Migrate existing data without loss to Supabase
+  const migrateToSupabase = useCallback(async () => {
+    try {
+      const res = await fetch("/api/db/migrate", { method: "POST" });
+      const data = await res.json();
+      await refreshFromDb();
+      return data;
+    } catch (err: any) {
+      return { success: false, message: err.message || "Failed to migrate data to Supabase" };
     }
   }, [refreshFromDb]);
 
@@ -866,6 +879,7 @@ export const StudyProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         isDbLoading,
         refreshFromDb,
         seedToSupabase,
+        migrateToSupabase,
         timerState,
         startTimer,
         pauseTimer,

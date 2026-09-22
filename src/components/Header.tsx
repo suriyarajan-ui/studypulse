@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useStudy } from "../context/StudyContext";
 import {
   Sparkles,
@@ -15,6 +15,8 @@ import {
   Database,
 } from "lucide-react";
 import { DatabaseStatusModal } from "./Modals";
+import { AISearchModal } from "./AISearchModal";
+import { PWAInstallButton } from "./PWAInstallButton";
 
 export const Header: React.FC<{ onOpenProfile?: () => void }> = ({ onOpenProfile }) => {
   const {
@@ -32,6 +34,19 @@ export const Header: React.FC<{ onOpenProfile?: () => void }> = ({ onOpenProfile
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [showDbModal, setShowDbModal] = useState(false);
+  const [showAISearch, setShowAISearch] = useState(false);
+
+  // Global keyboard shortcut: Cmd+K / Ctrl+K opens AI Search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setShowAISearch(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Format timer seconds into MM:SS
   const formatTimer = (seconds: number) => {
@@ -43,28 +58,28 @@ export const Header: React.FC<{ onOpenProfile?: () => void }> = ({ onOpenProfile
   const activeSubject = subjects.find((s) => s.id === timerState.subjectId);
 
   return (
-    <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 lg:px-8 py-3.5 transition-all">
-      <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
+    <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-3 sm:px-4 lg:px-8 py-2.5 sm:py-3.5 transition-all">
+      <div className="flex items-center justify-between gap-2 sm:gap-4 max-w-7xl mx-auto">
         {/* Brand & Mobile tab indicator */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <div
             id="brand-logo"
             onClick={() => setActiveTab("dashboard")}
-            className="flex items-center gap-2.5 cursor-pointer group"
+            className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group"
           >
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-sky-400 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-              <GraduationCap className="w-5 h-5" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-sky-400 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform shrink-0">
+              <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-heading font-bold text-lg tracking-tight text-slate-900">
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <span className="font-heading font-bold text-base sm:text-lg tracking-tight text-slate-900">
                   StudyPulse
                 </span>
-                <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200/60">
-                  AI Coach
+                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200/60">
+                  AI
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 hidden sm:block">
+              <p className="text-[11px] text-slate-500 hidden md:block">
                 Smart Study Planner & Personal Tutor
               </p>
             </div>
@@ -73,29 +88,58 @@ export const Header: React.FC<{ onOpenProfile?: () => void }> = ({ onOpenProfile
 
         {/* Global Quick Search */}
         <div className="flex-1 max-w-md hidden md:block">
-          <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <div className="relative flex items-center">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               id="global-search-input"
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search topics, tasks, exams, notes (e.g., 'EAS', 'midterm')..."
-              className="w-full pl-9 pr-8 py-1.5 text-xs bg-slate-100/80 hover:bg-slate-100 focus:bg-white text-slate-800 placeholder-slate-400 rounded-lg border border-slate-200/80 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all outline-none"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  setShowAISearch(true);
+                }
+              }}
+              placeholder="Search or ask AI in natural language..."
+              className="w-full pl-9 pr-20 py-2 text-xs bg-slate-100/80 hover:bg-slate-100 focus:bg-white text-slate-800 placeholder-slate-400 rounded-lg border border-slate-200/80 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all outline-none"
             />
-            {searchQuery && (
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="text-slate-400 hover:text-slate-600 p-1 rounded-md"
+                  title="Clear search"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
               <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                id="header-ai-search-trigger"
+                onClick={() => setShowAISearch(true)}
+                className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/70 text-[10px] font-bold shadow-2xs transition-colors"
+                title="Open AI Natural Language Search (Cmd+K)"
               >
-                <X className="w-3.5 h-3.5" />
+                <Sparkles className="w-2.5 h-2.5 text-indigo-600" />
+                <span>AI</span>
+                <span className="hidden lg:inline text-[9px] opacity-60">⌘K</span>
               </button>
-            )}
+            </div>
           </div>
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          {/* Mobile AI Search Trigger */}
+          <button
+            id="mobile-ai-search-btn"
+            onClick={() => setShowAISearch(true)}
+            className="md:hidden p-2 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 rounded-xl border border-indigo-200/60 transition-colors"
+            title="Ask AI Search Assistant"
+            aria-label="AI Search"
+          >
+            <Sparkles className="w-4 h-4" />
+          </button>
           {/* Quick Focus Timer widget */}
           <div
             id="header-timer-pill"
@@ -177,6 +221,9 @@ export const Header: React.FC<{ onOpenProfile?: () => void }> = ({ onOpenProfile
             />
           </button>
 
+          {/* In-App PWA Install Button */}
+          <PWAInstallButton variant="header" />
+
           {/* Quick AI Coach Button */}
           <button
             id="header-ai-coach-btn"
@@ -192,8 +239,9 @@ export const Header: React.FC<{ onOpenProfile?: () => void }> = ({ onOpenProfile
             <button
               id="notifications-bell-btn"
               onClick={() => setShowNotifications(!showNotifications)}
-              className="relative p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+              className="relative p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 transition-colors"
               title="Notifications & upcoming deadlines"
+              aria-label="Notifications"
             >
               <Bell className="w-4 h-4" />
               {notifications.length > 0 && (
@@ -207,15 +255,15 @@ export const Header: React.FC<{ onOpenProfile?: () => void }> = ({ onOpenProfile
                   className="fixed inset-0 z-40"
                   onClick={() => setShowNotifications(false)}
                 />
-                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-xl border border-slate-200 p-4 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="fixed sm:absolute right-2 sm:right-0 top-14 sm:top-auto sm:mt-2 w-[calc(100vw-1rem)] max-w-xs sm:max-w-none sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 z-50 animate-in fade-in zoom-in-95 duration-150">
                   <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div className="flex items-center gap-2">
-                      <Bell className="w-4 h-4 text-indigo-600" />
+                      <Bell className="w-4 h-4 text-indigo-600 shrink-0" />
                       <h4 className="font-semibold text-sm text-slate-800">
                         Upcoming Deadlines & Alerts
                       </h4>
                     </div>
-                    <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600">
+                    <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 shrink-0">
                       {notifications.length} active
                     </span>
                   </div>
@@ -307,6 +355,13 @@ export const Header: React.FC<{ onOpenProfile?: () => void }> = ({ onOpenProfile
 
       {/* Supabase Status and Sync Modal */}
       <DatabaseStatusModal isOpen={showDbModal} onClose={() => setShowDbModal(false)} />
+
+      {/* AI Natural Language Search & Query Assistant Modal */}
+      <AISearchModal
+        isOpen={showAISearch}
+        onClose={() => setShowAISearch(false)}
+        initialQuery={searchQuery}
+      />
     </header>
   );
 };

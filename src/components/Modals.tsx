@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useStudy } from "../context/StudyContext";
-import { X, Calendar, Clock, BookOpen, AlertCircle, Award, Database, CheckCircle2, RefreshCw, Server, Check } from "lucide-react";
+import { X, Calendar, Clock, BookOpen, AlertCircle, Award, Database, CheckCircle2, RefreshCw, Server, Check, Copy, ExternalLink } from "lucide-react";
 import { PriorityLevel, TaskStatus, TaskType } from "../types";
 
 // ==================== TASK MODAL ====================
@@ -39,13 +39,13 @@ export const NewTaskModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-150">
+      <div className="bg-white rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 space-y-4 my-auto max-h-[92vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-2 border-b border-slate-100">
           <h3 className="font-heading font-bold text-base text-slate-900">
             Add New Study Task
           </h3>
-          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg">
+          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg min-h-[32px] min-w-[32px] flex items-center justify-center">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -59,17 +59,17 @@ export const NewTaskModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
               placeholder="e.g. Read Chapter 4 & complete practice problem set"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 font-medium"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 font-medium min-h-[38px]"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label className="block font-semibold text-slate-700 mb-1">Course / Subject</label>
               <select
                 value={subjectId}
                 onChange={(e) => setSubjectId(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               >
                 {subjects.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -84,7 +84,7 @@ export const NewTaskModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as PriorityLevel)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               >
                 <option value="urgent">Urgent</option>
                 <option value="high">High</option>
@@ -94,14 +94,14 @@ export const NewTaskModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             <div>
               <label className="block font-semibold text-slate-700 mb-1">Due Date</label>
               <input
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               />
             </div>
 
@@ -111,7 +111,7 @@ export const NewTaskModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                 type="time"
                 value={dueTime}
                 onChange={(e) => setDueTime(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               />
             </div>
 
@@ -123,7 +123,7 @@ export const NewTaskModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                 max="600"
                 value={estimatedMinutes}
                 onChange={(e) => setEstimatedMinutes(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono min-h-[38px]"
               />
             </div>
           </div>
@@ -133,7 +133,7 @@ export const NewTaskModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
             <select
               value={type}
               onChange={(e) => setType(e.target.value as TaskType)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none capitalize"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none capitalize min-h-[38px]"
             >
               <option value="homework">Homework</option>
               <option value="assignment">Assignment</option>
@@ -159,13 +159,13 @@ export const NewTaskModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-slate-600 hover:text-slate-800 font-semibold"
+              className="px-4 py-2 text-slate-600 hover:text-slate-800 font-semibold min-h-[40px] flex items-center justify-center rounded-xl"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-xs transition-colors"
+              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-xl font-bold shadow-xs transition-colors min-h-[40px] flex items-center justify-center"
             >
               Create Task
             </button>
@@ -240,20 +240,20 @@ export const NewSubjectModal: React.FC<{
   const palette = ["#4f46e5", "#0ea5e9", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-150">
+      <div className="bg-white rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 space-y-4 my-auto max-h-[92vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-2 border-b border-slate-100">
           <h3 className="font-heading font-bold text-base text-slate-900">
             {editingSubject ? "Edit Course Details" : "Add New Subject & Course"}
           </h3>
-          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg">
+          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg min-h-[32px] min-w-[32px] flex items-center justify-center">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-3 text-xs">
-          <div className="grid grid-cols-3 gap-2.5">
-            <div className="col-span-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <div className="sm:col-span-2">
               <label className="block font-semibold text-slate-700 mb-1">Subject Name *</label>
               <input
                 type="text"
@@ -261,7 +261,7 @@ export const NewSubjectModal: React.FC<{
                 placeholder="e.g. Organic Chemistry II"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium min-h-[38px]"
               />
             </div>
             <div>
@@ -271,12 +271,12 @@ export const NewSubjectModal: React.FC<{
                 placeholder="e.g. CHEM-240"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono min-h-[38px]"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label className="block font-semibold text-slate-700 mb-1">Instructor / Professor</label>
               <input
@@ -284,7 +284,7 @@ export const NewSubjectModal: React.FC<{
                 placeholder="e.g. Dr. Jennifer Clark"
                 value={professor}
                 onChange={(e) => setProfessor(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               />
             </div>
             <div>
@@ -295,7 +295,7 @@ export const NewSubjectModal: React.FC<{
                 max="10"
                 value={credits}
                 onChange={(e) => setCredits(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono min-h-[38px]"
               />
             </div>
           </div>
@@ -361,16 +361,17 @@ export const NewSubjectModal: React.FC<{
 
           <div>
             <label className="block font-semibold text-slate-700 mb-1">Course Theme Color</label>
-            <div className="flex items-center gap-2 pt-1">
+            <div className="flex flex-wrap items-center gap-2.5 pt-1">
               {palette.map((p) => (
                 <button
                   type="button"
                   key={p}
                   onClick={() => setColor(p)}
-                  className={`w-6 h-6 rounded-full transition-transform ${
+                  className={`w-7 h-7 rounded-full transition-transform min-w-[28px] min-h-[28px] flex items-center justify-center ${
                     color === p ? "ring-2 ring-indigo-500 scale-110" : ""
                   }`}
                   style={{ backgroundColor: p }}
+                  aria-label={`Color ${p}`}
                 />
               ))}
             </div>
@@ -380,13 +381,13 @@ export const NewSubjectModal: React.FC<{
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-slate-600 hover:text-slate-800 font-semibold"
+              className="px-4 py-2 text-slate-600 hover:text-slate-800 font-semibold min-h-[40px] flex items-center justify-center rounded-xl"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-xs"
+              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-xl font-bold shadow-xs min-h-[40px] flex items-center justify-center"
             >
               {editingSubject ? "Save Changes" : "Create Subject"}
             </button>
@@ -440,13 +441,13 @@ export const NewExamModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-150">
+      <div className="bg-white rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 space-y-4 my-auto max-h-[92vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-2 border-b border-slate-100">
           <h3 className="font-heading font-bold text-base text-slate-900">
             Schedule Upcoming Exam / Test
           </h3>
-          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg">
+          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg min-h-[32px] min-w-[32px] flex items-center justify-center">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -460,17 +461,17 @@ export const NewExamModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
               placeholder="e.g. Organic Chemistry Midterm 2"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium min-h-[38px]"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label className="block font-semibold text-slate-700 mb-1">Course</label>
               <select
                 value={subjectId}
                 onChange={(e) => setSubjectId(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               >
                 {subjects.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -488,19 +489,19 @@ export const NewExamModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                 max="100"
                 value={weightPercentage}
                 onChange={(e) => setWeightPercentage(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono min-h-[38px]"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             <div>
               <label className="block font-semibold text-slate-700 mb-1">Date</label>
               <input
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               />
             </div>
             <div>
@@ -509,7 +510,7 @@ export const NewExamModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               />
             </div>
             <div>
@@ -520,7 +521,7 @@ export const NewExamModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                 max="360"
                 value={durationMinutes}
                 onChange={(e) => setDurationMinutes(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono min-h-[38px]"
               />
             </div>
           </div>
@@ -532,7 +533,7 @@ export const NewExamModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
               placeholder="e.g. Science Hall 301 or Online Portal"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
             />
           </div>
 
@@ -544,7 +545,7 @@ export const NewExamModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
               type="text"
               value={topicsStr}
               onChange={(e) => setTopicsStr(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
             />
           </div>
 
@@ -562,13 +563,13 @@ export const NewExamModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-slate-600 hover:text-slate-800 font-semibold"
+              className="px-4 py-2 text-slate-600 hover:text-slate-800 font-semibold min-h-[40px] flex items-center justify-center rounded-xl"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-xs"
+              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-xl font-bold shadow-xs min-h-[40px] flex items-center justify-center"
             >
               Save Exam
             </button>
@@ -611,13 +612,13 @@ export const NewAssignmentModal: React.FC<{ isOpen: boolean; onClose: () => void
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-150">
+      <div className="bg-white rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 space-y-4 my-auto max-h-[92vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-2 border-b border-slate-100">
           <h3 className="font-heading font-bold text-base text-slate-900">
             Add Assignment / Project
           </h3>
-          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg">
+          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg min-h-[32px] min-w-[32px] flex items-center justify-center">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -631,17 +632,17 @@ export const NewAssignmentModal: React.FC<{ isOpen: boolean; onClose: () => void
               placeholder="e.g. Term Paper: Quantum Cryptography"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium min-h-[38px]"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label className="block font-semibold text-slate-700 mb-1">Course</label>
               <select
                 value={subjectId}
                 onChange={(e) => setSubjectId(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               >
                 {subjects.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -658,19 +659,19 @@ export const NewAssignmentModal: React.FC<{ isOpen: boolean; onClose: () => void
                 max="100"
                 value={weight}
                 onChange={(e) => setWeight(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono min-h-[38px]"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label className="block font-semibold text-slate-700 mb-1">Due Date</label>
               <input
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               />
             </div>
             <div>
@@ -679,7 +680,7 @@ export const NewAssignmentModal: React.FC<{ isOpen: boolean; onClose: () => void
                 type="time"
                 value={dueTime}
                 onChange={(e) => setDueTime(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               />
             </div>
           </div>
@@ -699,13 +700,13 @@ export const NewAssignmentModal: React.FC<{ isOpen: boolean; onClose: () => void
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-slate-600 hover:text-slate-800 font-semibold"
+              className="px-4 py-2 text-slate-600 hover:text-slate-800 font-semibold min-h-[40px] flex items-center justify-center rounded-xl"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-xs"
+              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-xl font-bold shadow-xs min-h-[40px] flex items-center justify-center"
             >
               Save Assignment
             </button>
@@ -751,13 +752,13 @@ export const NewScheduleBlockModal: React.FC<{ isOpen: boolean; onClose: () => v
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-150">
+      <div className="bg-white rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 space-y-4 my-auto max-h-[92vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-2 border-b border-slate-100">
           <h3 className="font-heading font-bold text-base text-slate-900">
             Add Study Schedule Block
           </h3>
-          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg">
+          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg min-h-[32px] min-w-[32px] flex items-center justify-center">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -771,17 +772,17 @@ export const NewScheduleBlockModal: React.FC<{ isOpen: boolean; onClose: () => v
               placeholder="e.g. Deep Practice: Graph Traversal Algorithms"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium min-h-[38px]"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label className="block font-semibold text-slate-700 mb-1">Course</label>
               <select
                 value={subjectId}
                 onChange={(e) => setSubjectId(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               >
                 {subjects.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -796,19 +797,19 @@ export const NewScheduleBlockModal: React.FC<{ isOpen: boolean; onClose: () => v
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label className="block font-semibold text-slate-700 mb-1">Start Time</label>
               <input
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               />
             </div>
             <div>
@@ -817,18 +818,18 @@ export const NewScheduleBlockModal: React.FC<{ isOpen: boolean; onClose: () => v
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label className="block font-semibold text-slate-700 mb-1">Study Technique</label>
               <select
                 value={technique}
                 onChange={(e) => setTechnique(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               >
                 <option value="Pomodoro">Pomodoro (25/5)</option>
                 <option value="Feynman Technique">Feynman Technique</option>
@@ -842,7 +843,7 @@ export const NewScheduleBlockModal: React.FC<{ isOpen: boolean; onClose: () => v
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as PriorityLevel)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               >
                 <option value="urgent">Urgent</option>
                 <option value="high">High</option>
@@ -856,13 +857,13 @@ export const NewScheduleBlockModal: React.FC<{ isOpen: boolean; onClose: () => v
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-slate-600 hover:text-slate-800 font-semibold"
+              className="px-4 py-2 text-slate-600 hover:text-slate-800 font-semibold min-h-[40px] flex items-center justify-center rounded-xl"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-xs"
+              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-xl font-bold shadow-xs min-h-[40px] flex items-center justify-center"
             >
               Add Block
             </button>
@@ -904,13 +905,13 @@ export const NewGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-150">
+      <div className="bg-white rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 space-y-4 my-auto max-h-[92vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-2 border-b border-slate-100">
           <h3 className="font-heading font-bold text-base text-slate-900">
             Set Academic Learning Goal
           </h3>
-          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg">
+          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg min-h-[32px] min-w-[32px] flex items-center justify-center">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -924,17 +925,17 @@ export const NewGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
               placeholder="e.g. Complete 50 Practice Algorithm Questions"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium min-h-[38px]"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label className="block font-semibold text-slate-700 mb-1">Category</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as any)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               >
                 <option value="weekly_hours">Study Hours</option>
                 <option value="exam_score">Exam Score Target</option>
@@ -949,12 +950,12 @@ export const NewGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                 min="1"
                 value={targetValue}
                 onChange={(e) => setTargetValue(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono min-h-[38px]"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label className="block font-semibold text-slate-700 mb-1">Unit of Measure</label>
               <input
@@ -962,7 +963,7 @@ export const NewGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
                 placeholder="e.g. hours, questions, days"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               />
             </div>
             <div>
@@ -971,7 +972,7 @@ export const NewGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                 type="date"
                 value={targetDate}
                 onChange={(e) => setTargetDate(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               />
             </div>
           </div>
@@ -980,13 +981,13 @@ export const NewGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-slate-600 hover:text-slate-800 font-semibold"
+              className="px-4 py-2 text-slate-600 hover:text-slate-800 font-semibold min-h-[40px] flex items-center justify-center rounded-xl"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-xs"
+              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-xl font-bold shadow-xs min-h-[40px] flex items-center justify-center"
             >
               Save Goal
             </button>
@@ -1024,13 +1025,13 @@ export const NewNoteModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-150">
+      <div className="bg-white rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-slate-200 space-y-4 my-auto max-h-[92vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-2 border-b border-slate-100">
           <h3 className="font-heading font-bold text-base text-slate-900">
             Create Learning Resource / Note
           </h3>
-          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg">
+          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg min-h-[32px] min-w-[32px] flex items-center justify-center">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -1044,17 +1045,17 @@ export const NewNoteModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
               placeholder="e.g. Organic Chemistry Reaction Cheat Sheet"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium min-h-[38px]"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label className="block font-semibold text-slate-700 mb-1">Course</label>
               <select
                 value={subjectId}
                 onChange={(e) => setSubjectId(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               >
                 {subjects.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -1070,7 +1071,7 @@ export const NewNoteModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                 value={tagsStr}
                 onChange={(e) => setTagsStr(e.target.value)}
                 placeholder="e.g. formulas, exam1, midterm"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none min-h-[38px]"
               />
             </div>
           </div>
@@ -1091,13 +1092,13 @@ export const NewNoteModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-slate-600 hover:text-slate-800 font-semibold"
+              className="px-4 py-2 text-slate-600 hover:text-slate-800 font-semibold min-h-[40px] flex items-center justify-center rounded-xl"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-xs"
+              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-xl font-bold shadow-xs min-h-[40px] flex items-center justify-center"
             >
               Save Note
             </button>
@@ -1117,8 +1118,11 @@ export const DatabaseStatusModal: React.FC<{ isOpen: boolean; onClose: () => voi
   const [syncing, setSyncing] = useState(false);
   const [syncResult, setSyncResult] = useState<{ success: boolean; message: string } | null>(null);
   const [copiedSqlPath, setCopiedSqlPath] = useState(false);
+  const [copiedSqlText, setCopiedSqlText] = useState(false);
 
   if (!isOpen) return null;
+
+  const projectRef = dbStatus.url?.match(/https:\/\/([a-z0-9-]+)\.supabase\.co/)?.[1];
 
   const handleSeed = async () => {
     setSyncing(true);
@@ -1139,16 +1143,28 @@ export const DatabaseStatusModal: React.FC<{ isOpen: boolean; onClose: () => voi
     setTimeout(() => setCopiedSqlPath(false), 2000);
   };
 
+  const copyFullSql = async () => {
+    try {
+      const res = await fetch("/api/db/schema-sql");
+      const sql = await res.text();
+      navigator.clipboard?.writeText(sql);
+      setCopiedSqlText(true);
+      setTimeout(() => setCopiedSqlText(false), 2500);
+    } catch {
+      navigator.clipboard?.writeText("supabase/schema.sql");
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-150">
+      <div className="bg-white rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-slate-200 space-y-4 sm:space-y-5 my-auto max-h-[92vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
               <Database className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-heading font-bold text-base text-slate-900">
+              <h3 className="font-heading font-bold text-sm sm:text-base text-slate-900">
                 Supabase PostgreSQL Database
               </h3>
               <p className="text-[11px] text-slate-500">
@@ -1156,33 +1172,33 @@ export const DatabaseStatusModal: React.FC<{ isOpen: boolean; onClose: () => voi
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg">
+          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg min-h-[32px] min-w-[32px] flex items-center justify-center">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Status Card */}
         <div
-          className={`p-4 rounded-xl border ${
+          className={`p-3.5 sm:p-4 rounded-xl border ${
             dbStatus.connected
               ? "bg-emerald-50/60 border-emerald-200 text-emerald-900"
               : "bg-slate-50 border-slate-200 text-slate-800"
           }`}
         >
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
             <div className="flex items-center gap-2">
               <span
-                className={`w-2.5 h-2.5 rounded-full ${
+                className={`w-2.5 h-2.5 rounded-full shrink-0 ${
                   dbStatus.connected ? "bg-emerald-500 animate-pulse" : "bg-sky-500"
                 }`}
               />
-              <span className="font-bold text-sm">
+              <span className="font-bold text-xs sm:text-sm">
                 {dbStatus.connected
                   ? "Connected to Supabase PostgreSQL"
                   : "Local Resilient Mode (Supabase Ready)"}
               </span>
             </div>
-            <span className="text-[11px] font-mono uppercase font-semibold px-2 py-0.5 rounded bg-white/80 border border-slate-200">
+            <span className="text-[10px] font-mono uppercase font-semibold px-2 py-0.5 rounded bg-white/80 border border-slate-200 w-fit">
               {dbStatus.provider}
             </span>
           </div>
@@ -1207,7 +1223,7 @@ export const DatabaseStatusModal: React.FC<{ isOpen: boolean; onClose: () => voi
           <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
             Schema Tables (PostgreSQL)
           </h4>
-          <div className="grid grid-cols-3 gap-2 text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2 text-xs">
             {[
               { name: "subjects", count: dbStatus.tableCounts?.subjects ?? 4 },
               { name: "study_tasks", count: dbStatus.tableCounts?.tasks ?? 5 },
@@ -1221,10 +1237,10 @@ export const DatabaseStatusModal: React.FC<{ isOpen: boolean; onClose: () => voi
             ].map((tbl) => (
               <div
                 key={tbl.name}
-                className="p-2 bg-slate-50 rounded-lg border border-slate-100 flex items-center justify-between"
+                className="p-2 bg-slate-50 rounded-lg border border-slate-100 flex items-center justify-between gap-1"
               >
                 <span className="font-mono text-[11px] text-slate-700 truncate">{tbl.name}</span>
-                <span className="text-[10px] font-bold text-indigo-600 px-1.5 py-0.2 rounded bg-indigo-50">
+                <span className="text-[10px] font-bold text-indigo-600 px-1.5 py-0.2 rounded bg-indigo-50 shrink-0">
                   {tbl.count}
                 </span>
               </div>
@@ -1233,23 +1249,36 @@ export const DatabaseStatusModal: React.FC<{ isOpen: boolean; onClose: () => voi
         </div>
 
         {/* Schema Migration File Notice */}
-        <div className="p-3 bg-indigo-50/70 border border-indigo-100 rounded-xl text-xs text-indigo-950 space-y-1.5">
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-indigo-900">PostgreSQL Migration Script:</span>
-            <button
-              onClick={copyPath}
-              className="text-[11px] font-bold text-indigo-700 hover:text-indigo-800 flex items-center gap-1 bg-white px-2 py-0.5 rounded border border-indigo-200"
-            >
-              {copiedSqlPath ? <Check className="w-3 h-3" /> : null}
-              {copiedSqlPath ? "Copied" : "Copy Path"}
-            </button>
+        <div className="p-3 bg-indigo-50/70 border border-indigo-100 rounded-xl text-xs text-indigo-950 space-y-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <span className="font-semibold text-indigo-900">PostgreSQL Schema & Tables:</span>
+            <div className="flex flex-wrap items-center gap-1.5">
+              <button
+                onClick={copyFullSql}
+                className="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-emerald-300 shadow-2xs hover:bg-emerald-50/50 min-h-[30px]"
+              >
+                {copiedSqlText ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                {copiedSqlText ? "SQL Copied!" : "Copy Full SQL"}
+              </button>
+              {projectRef && (
+                <a
+                  href={`https://supabase.com/dashboard/project/${projectRef}/sql/new`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] font-bold text-indigo-700 hover:text-indigo-800 flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-indigo-200 shadow-2xs hover:bg-indigo-50/50 min-h-[30px]"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  SQL Editor
+                </a>
+              )}
+            </div>
           </div>
           <p className="text-[11px] text-indigo-800 leading-relaxed">
-            The complete schema with tables, foreign keys, and RLS policies is ready in{" "}
+            The complete schema script (all 9 tables, indexes & RLS policies) is ready in{" "}
             <code className="bg-white/80 px-1 py-0.5 rounded border border-indigo-200 font-mono text-[10px]">
               supabase/schema.sql
             </code>
-            . Run it in your Supabase SQL Editor.
+            . Click <strong>Copy Full SQL</strong> and paste it into your Supabase SQL Editor to initialize all tables.
           </p>
         </div>
 
@@ -1262,27 +1291,36 @@ export const DatabaseStatusModal: React.FC<{ isOpen: boolean; onClose: () => voi
                 : "bg-amber-50 text-amber-800 border-amber-200"
             }`}
           >
-            {syncResult.message}
+            <div className="font-semibold">{syncResult.message}</div>
+            {(syncResult as any).details && (
+              <div className="mt-2 pt-2 border-t border-emerald-200/60 flex flex-wrap gap-1.5 text-[10px]">
+                {Object.entries((syncResult as any).details).map(([tbl, cnt]) => (
+                  <span key={tbl} className="px-1.5 py-0.5 rounded bg-emerald-100/80 font-mono">
+                    {tbl}: {String(cnt)}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
         {/* Action Controls */}
-        <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-2.5 pt-3 border-t border-slate-100">
           <button
             type="button"
             disabled={isDbLoading}
             onClick={() => refreshFromDb()}
-            className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-800 px-3 py-2 rounded-xl hover:bg-slate-100 transition-colors"
+            className="flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-800 px-3 py-2 rounded-xl hover:bg-slate-100 transition-colors min-h-[40px]"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isDbLoading ? "animate-spin" : ""}`} />
             Recheck Connection
           </button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800"
+              className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 min-h-[40px] flex items-center justify-center rounded-xl"
             >
               Close
             </button>
@@ -1290,14 +1328,14 @@ export const DatabaseStatusModal: React.FC<{ isOpen: boolean; onClose: () => voi
               type="button"
               disabled={syncing}
               onClick={handleSeed}
-              className="flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-xs transition-all"
+              className="flex items-center justify-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-xs transition-all min-h-[40px]"
             >
               {syncing ? (
                 <RefreshCw className="w-3.5 h-3.5 animate-spin" />
               ) : (
                 <CheckCircle2 className="w-3.5 h-3.5" />
               )}
-              {syncing ? "Synchronizing..." : "Seed / Sync Tables"}
+              {syncing ? "Migrating Data..." : "Migrate & Sync Data"}
             </button>
           </div>
         </div>
